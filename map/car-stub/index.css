@@ -1,0 +1,11 @@
+.car-info{
+    display: inline-block;
+    vertical-align: center;
+
+    margin: 10px;
+    padding: 10px;
+}
+
+.button{
+    margin-left : 10px;
+}
