@@ -47,7 +47,7 @@ class ReaderX:
     def Data(self, data):
         if(self.updates % 25 == 0):
           self.problem = True
-          self.problemCarID = data.id
+          self.problemCarID = data["id"]
 
         if(self.problem == True):
           self.problemCounter = self.problemCounter + 1   
@@ -60,7 +60,7 @@ class ReaderX:
         data = {"People" : randrange(10), "Motor-Temperature" : randrange(10), "Problem": self.problem}
 
         if(self.problem):
-          data.ProblemType = "Low Battery"
+          data["ProblemType"] = "Low Battery"
 
         
         return data
