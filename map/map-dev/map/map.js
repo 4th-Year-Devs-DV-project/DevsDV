@@ -148,7 +148,7 @@ class Map extends mapboxgl.Map{
     static MapOptions() {    
         return {
             container: document.getElementById('map'),
-            style: 'mapbox://styles/mrjimenez/ck1mw29ms0bm41cqasq6b8de8',
+            style: 'mapbox://styles/mrjimenez/ck5xjuhp0004c1ilmr4gqty2u',
             center: [-75.697729, 45.384924],
             zoom: 15.00,
             pitch: 54,
