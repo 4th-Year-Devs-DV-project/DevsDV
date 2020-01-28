@@ -74,10 +74,19 @@ class ReaderX:
             item["problem"] = False
             item["time"] = 0
         
-        item["data"] = {"People" : randrange(10), "Motor-Temperature" : randrange(10)}
+        item["data"] = {"People" : randrange(10), "Motor-Temperature" : str(randrange(10) + 20) + " C"}
 
         if(item["problem"]):
-          item["data"]["Problem"] = "Low Battery"
+          problemType = randrange(3) + 1
+          problem = "Motor-Temperature"
+          if(problemType == 1):
+            problem = "Low Battery"
+          elif(problemType == 2):
+            problem = "Breaks Problem"
+          elif(problemType == 3):
+            problem = "General system problem"
+            
+          item["data"]["Problem"] = problem
 
         for x in self.cars:
           if (x["id"] == item["id"]): 
