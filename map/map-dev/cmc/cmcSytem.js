@@ -22,7 +22,7 @@ class CMCSytem extends Evented{
     /**
      * Initializes map
      * 
-     * TODO: we should not start tracking cars until map is ready.
+     *  
      * 
      * use sockets to emit map ready to let other clients know. 
      */

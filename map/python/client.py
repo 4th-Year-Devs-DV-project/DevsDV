@@ -25,45 +25,66 @@ class ReaderX:
 
     def __init__(self):
         self.updates = 0
-        self.problemCounter = 0
-        self.problem = False
-        self.problemCarID = None
+        self.cars = []
 
     def Read(self):        
         self.updates = self.updates + 1
         #TODO :Replace this by actual read function
         result = {"carID" : "test-car", "location":[10,10]} 
-        self.Data(result)
+
+       
 
         return result
     
     def Test(self,simulator):
         self.updates = self.updates + 1
         result = simulator.Update()
-        self.Data(result)
+        
+        current = None
+        for x in self.cars:
+          if (x["id"] == result["id"]): 
+              current = result              
+              current["failAt"] = x["failAt"]
+              current["okAt"] = x["okAt"]
+              current["problem"] = x["problem"]
+              current["time"] = x["time"]
+              
 
-        return result
+        if(current == None):
+          current = result
+          current["failAt"] = randrange(25) + 10
+          current["okAt"] = current["failAt"] / 2
+          current["problem"] = False
+          current["time"] = 0
+          self.cars.append(current)   
+        
+        self.Data(current)
+        
+        return current
     
-    def Data(self, data):
-        if(self.updates % 25 == 0):
-          self.problem = True
-          self.problemCarID = data["id"]
-
-        if(self.problem == True):
-          self.problemCounter = self.problemCounter + 1   
-
-        if(self.problemCounter >= 5):
-          self.problem = False 
-          self.problemCounter = 0
-          self.problemCarID = None
+    def Data(self, item):
         
-        data = {"People" : randrange(10), "Motor-Temperature" : randrange(10), "Problem": self.problem}
-
-        if(self.problem):
-          data["ProblemType"] = "Low Battery"
-
+        if(self.updates % item["failAt"] == 0):
+          item["problem"] = True
         
-        return data
+        if(item["problem"]):
+          item["time"] = item["time"] + 1  
+
+          if(item["time"] > item["okAt"]):
+            item["problem"] = False
+            item["time"] = 0
+        
+        item["data"] = {"People" : randrange(10), "Motor-Temperature" : randrange(10)}
+
+        if(item["problem"]):
+          item["data"]["Problem"] = "Low Battery"
+
+        for x in self.cars:
+          if (x["id"] == item["id"]): 
+              x["time"] = item["time"]
+              x["problem"] = item["problem"]
+        
+        return item
         
     
 
@@ -94,7 +115,7 @@ class CarSimulator:
     def Update(self):
         if(self.currentIndex + self.frequency < len(self.path) - self.frequency):
             self.currentIndex = self.currentIndex + self.frequency
-            print("updating index... ", self.currentIndex)
+            #print("updating index... ", self.currentIndex)
         else:
             self.currentIndex = 0
         
@@ -1885,17 +1906,17 @@ path2 = [
 reader = ReaderX()
 socket = SocketX('http://localhost:3000')
 car1 = CarSimulator("test-car 1", path, 1,False)
-#car2 = CarSimulator("test-car 2", path, 1, False)
-#car3 = CarSimulator("test-car 3", path, 1, True)
-#car4 = CarSimulator("test-car 4", path2, 1, True)
-#car5 = CarSimulator("test-car 5", path2, 1, False)
+car2 = CarSimulator("test-car 2", path, 3, False)
+car3 = CarSimulator("test-car 3", path, 1, True)
+car4 = CarSimulator("test-car 4", path2, 5, True)
+car5 = CarSimulator("test-car 5", path2, 1, False)
 
 while(True):
-    time.sleep(0.1)       
+    time.sleep(1)       
     socket.Emit("updated", reader.Test(car1))
-    #socket.Emit("updated", reader.Test(car2))
-    #socket.Emit("updated", reader.Test(car3))
-    #socket.Emit("updated", reader.Test(car4))
-    #socket.Emit("updated", reader.Test(car5))
+    socket.Emit("updated", reader.Test(car2))
+    socket.Emit("updated", reader.Test(car3))
+    socket.Emit("updated", reader.Test(car4))
+    socket.Emit("updated", reader.Test(car5))
 
    
