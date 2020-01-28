@@ -16,9 +16,7 @@ class CMCSytem extends Evented{
 
         this.socket.on("connection-success", function(data){alert(data)});
 
-        this.socket.on("subscribe", this.AddCar.bind(this)); 
-
-        this.socket.on("update", this.UpdateCarOnMap.bind(this));    
+        this.socket.on("updated", this.UpdateCarOnMap.bind(this));    
     }
 
     /**
@@ -69,16 +67,17 @@ class CMCSytem extends Evented{
      * updates the car on the map
      */
     UpdateCarOnMap(item){
-
+        
         var car = this.cars[item.id];
+        
+        if(car == undefined){
 
-        if(car != undefined){ 
-             
-            car.Update(item);
-
-            this.map.UpdateMapeable(car);
+            car = this.AddCar(item.id);
         }
-         
+
+        car.Update(item);
+
+        this.map.UpdateMapeable(car);                
     }
 }
 

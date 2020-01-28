@@ -33,6 +33,7 @@ class Car extends Mapeable {
      * it should contain {location: [x,y], data: {a:"qw", b:"qw", c: "qw" ...}} 
      */
     Update(updated){
+        
 
         this.Location(updated.location);
 

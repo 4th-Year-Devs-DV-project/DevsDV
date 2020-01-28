@@ -1,17 +1,23 @@
 import socketio
+import eventlet
 
-# create a Socket.IO server
+
 sio = socketio.Server()
-
-# wrap with a WSGI application
 app = socketio.WSGIApp(sio)
 
-@sio.on('connect')
-def connect(sid, data):
-    print(sid + " has connected")
-    
+print("Server is running")
 
-@sio.on('disconnect')
-def disconnect(sid, data):
-    print(sid + " has disconnected")
-    
+@sio.event
+def connect(sid, environ):
+    print('connect ', sid)
+
+@sio.event
+def my_message(sid, data):
+    print('message ', data)
+
+@sio.event
+def disconnect(sid):
+    print('disconnect ', sid)
+
+if __name__ == '__main__':
+    eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
