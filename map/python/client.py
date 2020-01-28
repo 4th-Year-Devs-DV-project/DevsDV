@@ -3,6 +3,7 @@ import time
 import socketio
 from random import randrange
 import json
+from make_json import make_json
 
 class SocketX:
     def __init__(self, ws):
@@ -30,12 +31,65 @@ class ReaderX:
     def Read(self):        
         self.updates = self.updates + 1
         #TODO :Replace this by actual read function
-        result = {"carID" : "test-car", "location":[10,10]} 
+        result = make_json()
+        
+        result["location"] = self.Locations(result["buildingID"])
 
-       
+        current = None
+        for x in self.cars:
+          if (x["id"] == result["id"]): 
+              current = result              
+              current["failAt"] = x["failAt"]
+              current["okAt"] = x["okAt"]
+              current["problem"] = x["problem"]
+              current["time"] = x["time"]
+              
 
-        return result
+        if(current == None):
+          current = result
+          current["failAt"] = randrange(25) + 10
+          current["okAt"] = current["failAt"] / 2
+          current["problem"] = False
+          current["time"] = 0
+          self.cars.append(current)   
+        
+        self.Data(current)
+
+        print(current)
+        return current
     
+    def Locations(self, buildingID):
+      location = None
+      if(buildingID == "A"):
+        location = [-75.697064, 
+        45.388604]
+      elif(buildingID == "B"):
+        location = [
+                -75.695349,
+                45.386425
+              ]
+      elif(buildingID == "C"):
+        location = [
+                -75.693828,
+                45.382949
+              ]
+      elif(buildingID == "D"):
+        location = [
+                -75.695599,
+                45.382325
+              ]
+      elif(buildingID == "E"):
+        location = [
+                -75.696371,
+                45.385496
+              ]
+      elif(buildingID == "F"):
+        location = [
+                -75.696893,
+                45.388428
+              ]
+      return location
+
     def Test(self,simulator):
         self.updates = self.updates + 1
         result = simulator.Update()
@@ -1922,10 +1976,10 @@ car5 = CarSimulator("test-car 5", path2, 1, False)
 
 while(True):
     time.sleep(1)       
-    socket.Emit("updated", reader.Test(car1))
-    socket.Emit("updated", reader.Test(car2))
-    socket.Emit("updated", reader.Test(car3))
-    socket.Emit("updated", reader.Test(car4))
-    socket.Emit("updated", reader.Test(car5))
+    socket.Emit("updated", reader.Read())
+    #socket.Emit("updated", reader.Test(car2))
+    #socket.Emit("updated", reader.Test(car3))
+    #socket.Emit("updated", reader.Test(car4))
+    #socket.Emit("updated", reader.Test(car5))
 
    
