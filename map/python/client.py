@@ -32,6 +32,8 @@ class ReaderX:
         self.updates = self.updates + 1
         #TODO :Replace this by actual read function
         result = make_json()
+        temporal = ["A", "B", "D","E", "F"]
+        result["buildingID"] = temporal[self.updates % len(temporal)]
         
         result["location"] = self.Locations(result["buildingID"])
 
@@ -1975,11 +1977,13 @@ car4 = CarSimulator("test-car 4", path2, 5, True)
 car5 = CarSimulator("test-car 5", path2, 1, False)
 
 while(True):
-    time.sleep(1)       
-    socket.Emit("updated", reader.Read())
-    #socket.Emit("updated", reader.Test(car2))
-    #socket.Emit("updated", reader.Test(car3))
-    #socket.Emit("updated", reader.Test(car4))
-    #socket.Emit("updated", reader.Test(car5))
+    time.sleep(0.05)       
+    #socket.Emit("updated", reader.Read())
+    
+    socket.Emit("updated", reader.Test(car1))
+    socket.Emit("updated", reader.Test(car2))
+    socket.Emit("updated", reader.Test(car3))
+    socket.Emit("updated", reader.Test(car4))
+    socket.Emit("updated", reader.Test(car5))
 
    
