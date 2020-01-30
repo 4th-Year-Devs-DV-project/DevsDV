@@ -191,8 +191,26 @@ class CarSimulator:
         return self.data
     
    
-    
+def Test(reader, socket, nap):
+  car1 = CarSimulator("test-car 1", path, 1,False)
+  car2 = CarSimulator("test-car 2", path, 3, False)
+  car3 = CarSimulator("test-car 3", path, 1, True)
+  car4 = CarSimulator("test-car 4", path2, 5, True)
+  car5 = CarSimulator("test-car 5", path2, 1, False)
 
+  while(True):
+    time.sleep(nap)       
+    socket.Emit("updated", reader.Test(car1))
+    socket.Emit("updated", reader.Test(car2))
+    socket.Emit("updated", reader.Test(car3))
+    socket.Emit("updated", reader.Test(car4))
+    socket.Emit("updated", reader.Test(car5))
+
+
+def MyMain(nap):
+  while(True):
+    time.sleep(nap)       
+    socket.Emit("updated", reader.Read())
 
 #used on my simulator
 path = [            
@@ -1970,20 +1988,5 @@ path2 = [
 
 reader = ReaderX()
 socket = SocketX('http://localhost:3000')
-car1 = CarSimulator("test-car 1", path, 1,False)
-car2 = CarSimulator("test-car 2", path, 3, False)
-car3 = CarSimulator("test-car 3", path, 1, True)
-car4 = CarSimulator("test-car 4", path2, 5, True)
-car5 = CarSimulator("test-car 5", path2, 1, False)
 
-while(True):
-    time.sleep(0.05)       
-    #socket.Emit("updated", reader.Read())
-    
-    socket.Emit("updated", reader.Test(car1))
-    socket.Emit("updated", reader.Test(car2))
-    socket.Emit("updated", reader.Test(car3))
-    socket.Emit("updated", reader.Test(car4))
-    socket.Emit("updated", reader.Test(car5))
-
-   
+Test(reader=reader, socket=socket, nap = 1)
