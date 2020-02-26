@@ -115,7 +115,7 @@ class ReaderX:
           self.cars.append(current)   
         
         self.Data(current)
-        
+        print(current)
         return current
     
     def Data(self, item):
