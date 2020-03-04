@@ -5,6 +5,7 @@ from random import randrange
 import json
 from make_json import make_json
 
+
 class SocketX:
     def __init__(self, ws):
         self.sio = socketio.Client()
@@ -32,33 +33,34 @@ class ReaderX:
         self.updates = self.updates + 1
         #TODO :Replace this by actual read function
         result = make_json()
-        temporal = ["A", "B", "D","E", "F"]
-        result["buildingID"] = temporal[self.updates % len(temporal)]
+        print(result)
+        # temporal = ["A", "B", "D","E", "F"]
+        # result["buildingID"] = temporal[self.updates % len(temporal)]
         
-        result["location"] = self.Locations(result["buildingID"])
+        # result["location"] = self.Locations(result["buildingID"])
 
-        current = None
-        for x in self.cars:
-          if (x["id"] == result["id"]): 
-              current = result              
-              current["failAt"] = x["failAt"]
-              current["okAt"] = x["okAt"]
-              current["problem"] = x["problem"]
-              current["time"] = x["time"]
+        # current = None
+        # for x in self.cars:
+        #   if (x["id"] == result["id"]): 
+        #       current = result              
+        #       current["failAt"] = x["failAt"]
+        #       current["okAt"] = x["okAt"]
+        #       current["problem"] = x["problem"]
+        #       current["time"] = x["time"]
               
 
-        if(current == None):
-          current = result
-          current["failAt"] = randrange(25) + 10
-          current["okAt"] = current["failAt"] / 2
-          current["problem"] = False
-          current["time"] = 0
-          self.cars.append(current)   
+        # if(current == None):
+        #   current = result
+        #   current["failAt"] = randrange(25) + 10
+        #   current["okAt"] = current["failAt"] / 2
+        #   current["problem"] = False
+        #   current["time"] = 0
+        #   self.cars.append(current)   
         
-        self.Data(current)
+        # self.Data(current)
 
-        print(current)
-        return current
+        # print(current)
+        # return current
     
     def Locations(self, buildingID):
       location = None
@@ -117,7 +119,12 @@ class ReaderX:
         self.Data(current)
         print(current)
         return current
-    
+
+    def Test2(self, simulator):
+      self.updates = self.updates + 1
+      result = simulator.Update()
+
+
     def Data(self, item):
         
         if(self.updates % item["failAt"] == 0):
@@ -191,26 +198,31 @@ class CarSimulator:
         return self.data
     
    
-def Test(reader, socket, nap):
-  car1 = CarSimulator("test-car 1", path, 1,False)
-  car2 = CarSimulator("test-car 2", path, 3, False)
-  car3 = CarSimulator("test-car 3", path, 1, True)
-  car4 = CarSimulator("test-car 4", path2, 5, True)
-  car5 = CarSimulator("test-car 5", path2, 1, False)
+# def Test(reader, socket, nap):
+#   car1 = CarSimulator("test-car 1", path, 1,False)
+#   car2 = CarSimulator("test-car 2", path, 3, False)
+#   car3 = CarSimulator("test-car 3", path, 1, True)
+#   car4 = CarSimulator("test-car 4", path2, 5, True)
+#   car5 = CarSimulator("test-car 5", path2, 1, False)
 
-  while(True):
-    time.sleep(nap)       
-    socket.Emit("updated", reader.Test(car1))
-    socket.Emit("updated", reader.Test(car2))
-    socket.Emit("updated", reader.Test(car3))
-    socket.Emit("updated", reader.Test(car4))
-    socket.Emit("updated", reader.Test(car5))
+#   while(True):
+#     time.sleep(nap)       
+#     socket.Emit("updated", reader.Test(car1))
+#     socket.Emit("updated", reader.Test(car2))
+#     socket.Emit("updated", reader.Test(car3))
+#     socket.Emit("updated", reader.Test(car4))
+#     socket.Emit("updated", reader.Test(car5))
 
+def Test2(reader, socket, nap):
+    car1 = CarSimulator("test-car 1", path, 1,False)
+    while(True):
+      time.sleep(nap)       
+      socket.Emit("updated", reader.Read())
 
-def MyMain(nap):
-  while(True):
-    time.sleep(nap)       
-    socket.Emit("updated", reader.Read())
+# def MyMain(nap):
+#   while(True):
+#     time.sleep(nap)       
+#     socket.Emit("updated", reader.Read())
 
 #used on my simulator
 path = [            
@@ -1989,4 +2001,4 @@ path2 = [
 reader = ReaderX()
 socket = SocketX('http://localhost:3000')
 
-Test(reader=reader, socket=socket, nap = 1)
+Test2(reader=reader, socket=socket, nap = 1)

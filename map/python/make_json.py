@@ -36,13 +36,14 @@ def make_json():
 
     check2 = " "
 
-    with open("/Users/J0s3F/Desktop/test_final.txt", 'rb') as f:
+    with open("/Users/J0s3F/Desktop/Test/TestLog.log", 'rb') as f:
         last_lines = tail(f, 1).decode('utf-8')
         checker = last_lines
-        if checker != check2:
-            check2 = checker
+        return checker
+        # if checker != check2:
+        #     check2 = checker   
             
-            if is_json(check2) :
-
-                d = json.loads(check2)
-                return(d)
+        #     if is_json(check2) :
+        #         d = json.loads(check2)
+        #         return(d)
+       
