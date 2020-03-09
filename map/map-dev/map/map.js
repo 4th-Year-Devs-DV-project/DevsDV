@@ -48,11 +48,13 @@ class Map extends mapboxgl.Map{
      */    
     UpdateMapeable(mapeable){
 
+        var layerID = mapeable.layer.id;
+
         var sourceID = mapeable.source.id;
         
-        var data = mapeable.source.data;
+        var item ={color: mapeable.color, colorProperty: mapeable.colorProperty, data: mapeable.source.data};
 
-        this.UpdateLayer(sourceID, data);
+        this.UpdateLayer(layerID, sourceID, item);
     }
 
     /**
@@ -77,11 +79,13 @@ class Map extends mapboxgl.Map{
      * Updates a layer on the map
      */
 
-    UpdateLayer(sourceID, data){    
+    UpdateLayer(layerID, sourceID, item){    
         
+        this.setPaintProperty(layerID, item.colorProperty, item.color);
+
         var source = this.getSource(sourceID);   
 
-        source.setData(data);
+        source.setData(item.data);
     }
 
     /**
@@ -102,7 +106,7 @@ class Map extends mapboxgl.Map{
      * 
      * sets event listeners for mapleable
      * 
-     * TODO: this function should be more generic
+     *  
      */
     EventListeners(mapeable){
 
@@ -144,7 +148,7 @@ class Map extends mapboxgl.Map{
     static MapOptions() {    
         return {
             container: document.getElementById('map'),
-            style: 'mapbox://styles/mrjimenez/ck1mw29ms0bm41cqasq6b8de8',
+            style: 'mapbox://styles/mrjimenez/ck5xjuhp0004c1ilmr4gqty2u',
             center: [-75.697729, 45.384924],
             zoom: 15.00,
             pitch: 54,

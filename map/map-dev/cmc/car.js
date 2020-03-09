@@ -4,16 +4,18 @@ import Mapeable from '../map/mapeable.js';
 class Car extends Mapeable {
 
     static instance = 0;
-    static colors = ["red", "black", "green", "magenta", "yellow", "cyan", "pink"];
-    
+    static colors = ["black" ];
+    static problemColor = ['red']
     
     constructor(id){
 
         super(id);
 
-        this.serialNumber = ++Car.instance;
+        this.serialNumber = ++Car.instance;        
 
         this.color = Car.colors[(this.serialNumber - 1) % Car.colors.length];
+
+        this.colorProperty = "circle-color";
 
         this.location = [];
 
@@ -33,10 +35,18 @@ class Car extends Mapeable {
      * it should contain {location: [x,y], data: {a:"qw", b:"qw", c: "qw" ...}} 
      */
     Update(updated){
-
+        
         this.Location(updated.location);
 
         this.Data(updated.data);
+
+        if(this.data["Problem"] != undefined){
+            debugger
+            this.color = Car.problemColor[0];
+        }
+        else{
+            this.color =  Car.colors[(this.serialNumber - 1) % Car.colors.length];
+        }
 
         this.Source();
     }
@@ -86,19 +96,19 @@ class Car extends Mapeable {
      * Creates a layer to be displayed on a map (mapbox)
      */
     Layer(){
+       
         this.layer = {
 
             'id' : 'car-layer-' + this.id,
 
-            'type' : 'symbol',
+            'type' : 'circle',
 
             'source' : "car-source-" + this.id,
 
-            'layout' : {
+            'paint' : {
+                "circle-radius": 5,
 
-             'icon-image': '{icon}-15',
-
-             'icon-allow-overlap': true
+                "circle-color": this.color
             }
         }
 
@@ -136,8 +146,6 @@ class Car extends Mapeable {
             'properties' : {
 
                 'info' : this.HTML().outerHTML,
-
-                'icon' : 'car'
 
             },
             'geometry': {
